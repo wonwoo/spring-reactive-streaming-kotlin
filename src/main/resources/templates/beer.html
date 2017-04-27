@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Spring Reactive Streaming</title>
+  <link rel="stylesheet" href="/webjars/bootstrap/3.3.7/css/bootstrap-theme.min.css"/>
+  <link rel="stylesheet" href="/webjars/bootstrap/3.3.7/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="/webjars/highcharts/5.0.10/css/highcharts.css"/>
+
+  <script type="text/javascript" src="/webjars/jquery/1.11.1/jquery.min.js"></script>
+  <script type="text/javascript" src="/webjars/highcharts/5.0.10/highcharts.js"></script>
+  <script type="text/javascript" src="/webjars/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container wrapper">
+  <div id="container" style="height: 600px; min-width: 310px"></div>
+</div>
+
+<script type="text/javascript">
+  let chart = new Highcharts.chart('container', {
+    title: {
+      text: 'World Beer Live Price'
+    },
+    yAxis: {
+      title: {
+        text: 'Beer Price'
+      }
+    },
+    legend: {
+      layout: 'vertical',
+      align: 'right',
+      verticalAlign: 'middle'
+    },
+    xAxis: {
+      type: 'datetime'
+    },
+    series: [{
+      name: 'Heineken',
+      data: []
+    }, {
+      name: 'Hoegaarden',
+      data: []
+    }, {
+      name: 'Miller',
+      data: []
+    }, {
+      name: 'Guinness',
+      data: []
+    }, {
+      name: 'Corona',
+      data: []
+    }, {
+      name: 'Budweiser',
+      data: []
+    }]
+  });
+  let appendBeerData = function (quote) {
+    chart.series
+        .filter(serie => serie.name === quote.name)
+        .forEach(serie => serie.addPoint([quote.instant * 1000, quote.price], true, serie.data.length > 20));
+  };
+  let stockEventSource = new EventSource("/beers");
+  stockEventSource.onmessage = e => appendBeerData(JSON.parse(e.data));
+
+</script>
+</body>
+</html>
