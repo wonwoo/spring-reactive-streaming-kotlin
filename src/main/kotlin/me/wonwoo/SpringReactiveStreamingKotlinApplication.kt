@@ -25,7 +25,7 @@ class SpringReactiveStreamingKotlinApplication {
           Beer(name = "Corona", price = BigDecimal(43.93, MathContext(2))),
           Beer(name = "Budweiser", price = BigDecimal(34.75, MathContext(2)))
       )
-      beerRepository.save(beers).blockLast(Duration.ofSeconds(3))
+      beerRepository.insert(beers).blockLast(Duration.ofSeconds(3))
     }
   }
 }
